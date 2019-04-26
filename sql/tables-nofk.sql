@@ -31,7 +31,7 @@ CREATE TABLE "players" (
   "player_id" smallint NOT NULL IDENTITY(1,1),
   "name" varchar(255) NOT NULL,
   PRIMARY KEY ("player_id"),
-  "team_id" varchar(4) FOREIGN KEY REFERENCES "teams"("team_id")
+  "team_id" varchar(4) NOT NULL
 )
 
 CREATE TABLE "staff" (
@@ -39,7 +39,7 @@ CREATE TABLE "staff" (
   "title" varchar(255) NOT NULL,
   "name" varchar(255) NOT NULL,
   PRIMARY KEY ("staff_id"),
-  "team_id" varchar(4) FOREIGN KEY REFERENCES "teams"("team_id")
+  "team_id" varchar(4) NOT NULL
 )
 
 CREATE TABLE "game_shedule" (
@@ -54,11 +54,12 @@ CREATE TABLE "game_shedule" (
 )
 
 CREATE TABLE "pool_points" (
-  "team_id" varchar(4) FOREIGN KEY REFERENCES "teams"("team_id"),
+  "ppid" int NOT NULL IDENTITY(1,1),
+  "team_id" varchar(4) NOT NULL,
   "game_id" smallint NOT NULL, -- Should be a FK 
   "points" smallint NOT NULL,
   -- PRIMARY KEY ("team_id","game_id")
-  PRIMARY KEY ("team_id")
+  PRIMARY KEY ("ppid")
 ) 
 
 SELECT * FROM Rugby7db.INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'
