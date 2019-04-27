@@ -19,6 +19,7 @@ namespace SQLSVR_WEBAPI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseEnvironment("Development")
                 .UseStartup<Startup>();
     }
 }

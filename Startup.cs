@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SQLSVR_WEBAPI.Models;
 
 namespace SQLSVR_WEBAPI
 {
@@ -26,6 +29,13 @@ namespace SQLSVR_WEBAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Connect to DB
+            string connection = Environment.GetEnvironmentVariable("ConnectionSQLSVRDB");
+
+            services.AddDbContext<Rugby7Context>(options => options
+                    .UseSqlServer(connection)
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +45,11 @@ namespace SQLSVR_WEBAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            else if (env.IsProduction() || env.IsStaging() || env.IsEnvironment("Staging_2"))
+            {
+                //app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
             else
             {
                 app.UseHsts();
@@ -42,6 +57,16 @@ namespace SQLSVR_WEBAPI
 
             app.UseHttpsRedirection();
             app.UseMvc();
+        }
+
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+        
+            Configuration = builder.Build();
         }
     }
 }
