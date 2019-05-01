@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GraphQL.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,17 @@ namespace SQLSVR_WEBAPI
             services.AddDbContext<Rugby7Context>(options => options
                     .UseSqlServer(connection)
             );
+
+            //services.AddSingleton<ChatSchema>();
+
+            // Add GraphQL services and configure options
+            services.AddGraphQL(options =>
+            {
+                options.EnableMetrics = true;
+                //options.ExposeExceptions = this.Environment.IsDevelopment();
+            })
+            .AddWebSockets() // Add required services for web socket support
+            .AddDataLoader(); // Add required services for DataLoader support
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
